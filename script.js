@@ -390,3 +390,4 @@ function showNotification(message) {
 
 // ===== START APP =====
 document.addEventListener('DOMContentLoaded', init);
+}
