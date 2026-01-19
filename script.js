@@ -317,7 +317,7 @@ function openCheckout() {
         showNotification('Добавьте товары в корзину');
         return;
     }
-    
+}   
     closeAllModals();
     
     // Update order summary
