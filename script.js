@@ -332,7 +332,7 @@ function openCheckout() {
     });
     
     elements.orderItems.innerHTML = itemsHTML;
-    elements.orderTotal.textContent = ${calculateCartTotal()} ₽;
+    elements.orderTotal.textContent = '${calculateCartTotal()} ₽';
     
     openModal('checkoutModal');
 }
