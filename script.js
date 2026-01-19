@@ -339,24 +339,24 @@ function openCheckout() {
 
 async function submitOrder(e) {
     e.preventDefault();
-    
+
     // Simple validation
     const name = document.getElementById('name').value.trim();
     const phone = document.getElementById('phone').value.trim();
     const address = document.getElementById('address').value.trim();
-    
-    if (!name  !phone  !address) {
+
+    if (!name || !phone || !address) {  // ← исправлено условие
         showNotification('Заполните все обязательные поля');
         return;
     }
-    
+
     // Generate order ID
     const orderId = 'FS' + Date.now().toString().slice(-6);
-    
+
     // Update success modal
     elements.paymentAmount.textContent = calculateCartTotal();
     elements.orderId.textContent = orderId;
-    
+
     // Save order (you can send to Telegram/email here)
     const order = {
         id: orderId,
@@ -376,9 +376,6 @@ async function submitOrder(e) {
     state.cart = [];
     saveCart();
     updateCartUI();
-    
-    // You can add Telegram/email sending here
-    // await sendToTelegram(order);
 }
 
 // ===== UI HELPERS =====
