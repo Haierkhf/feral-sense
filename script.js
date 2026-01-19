@@ -320,24 +320,21 @@ function openCheckout() {
     
     closeAllModals();
     
-    // Update order summary
-    let itemsHTML = '';
-    state.cart.forEach(item => {
-        itemsHTML += `
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span>${item.name} (${item.size}) × ${item.quantity}</span>
-                <span>${CONFIG.product.price * item.quantity} ₽</span>
-            </div>
-        `;
-    });
-    
-    elements.orderItems.innerHTML = itemsHTML;
-    elements.orderTotal.textContent =isplay = 'none';
-        });
+   // Update order summary
+let itemsHTML = '';
+state.cart.forEach(item => {
+    itemsHTML += `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>${item.name} (${item.size}) × ${item.quantity}</span>
+            <span>${CONFIG.product.price * item.quantity} ₽</span>
+        </div>
+    `;
+});
 
-    
-    openModal('checkoutModal');
-}
+elements.orderItems.innerHTML = itemsHTML;
+elements.orderTotal.textContent = ${calculateCartTotal()} ₽;
+
+openModal('checkoutModal');
 
 async function submitOrder(e) {
     e.preventDefault();
