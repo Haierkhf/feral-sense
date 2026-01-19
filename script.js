@@ -1,23 +1,132 @@
-classList.add('active');
+// ===== CONFIGURATION =====
+const CONFIG = {
+    product: {
+        id: 'reflex-origin-tee',
+        name: 'Reflex Origin Tee',
+        price: 2990,
+        sizes: ['M', 'L', 'XL', 'XXL']
+    },
+    storageKeys: {
+        cart: 'reflex_cart',
+        order: 'reflex_last_order'
+    }
+};
+
+// ===== STATE MANAGEMENT =====
+let state = {
+    cart: [],
+    selectedSize: 'M',
+    currentStep: 1,
+    orderData: null
+};
+
+// ===== DOM ELEMENTS =====
+let elements = {};
+
+function initElements() {
+    elements = {
+        menuToggle: document.getElementById('menuToggle'),
+        mobileMenu: document.getElementById('mobileMenu'),
+        cartToggle: document.getElementById('cartToggle'),
+        cartClose: document.getElementById('cartClose'),
+        cartCount: document.getElementById('cartCount'),
+        cartSidebar: document.getElementById('cartSidebar'),
+        sizeOptions: document.querySelectorAll('.size-option'),
+        addToCartBtn: document.getElementById('addToCartBtn'),
+        mainImage: document.querySelector('.image-main img'),
+        thumbnails: document.querySelectorAll('.thumb'),
+        sizeGuideModal: document.getElementById('sizeGuideModal'),
+        closeSizeGuide: document.getElementById('closeSizeGuide'),
+        sizeGuideLink: document.querySelector('.size-guide-link'),
+        checkoutModal: document.getElementById('checkoutModal'),
+        closeCheckout: document.getElementById('closeCheckout'),
+        successModal: document.getElementById('successModal'),
+        closeSuccess: document.getElementById('closeSuccess'),
+        cartBody: document.getElementById('cartBody'),
+        cartEmpty: document.getElementById('cartEmpty'),
+        cartTotal: document.getElementById('cartTotal'),
+        checkoutBtn: document.getElementById('checkoutBtn'),
+        checkoutForm: document.getElementById('checkoutForm'),
+        nextStepBtns: document.querySelectorAll('.next-step'),
+        prevStepBtns: document.querySelectorAll('.prev-step'),
+        orderSummary: document.getElementById('orderSummary'),
+        submitOrder: document.getElementById('submitOrder'),
+        finalOrderDetails: document.getElementById('finalOrderDetails'),
+        orderAmount: document.getElementById('orderAmount'),
+        orderNumber: document.getElementById('orderNumber'),
+        toast: document.getElementById('toast'),
+        toastMessage: document.getElementById('toastMessage'),
+        faqQuestions: document.querySelectorAll('.faq-question')
+    };
+}
+
+// ===== INITIALIZATION =====
+function init() {
+    initElements();
+    loadCart();
+    setupEventListeners();
+    updateCartUI();
+    
+    setTimeout(() => {
+        const preloader = document.querySelector('.preloader');
+        if (preloader) {
+            preloader.classList.add('prepare-remove');
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 300);
+        }
+    }, 1000);
+}
+
+// ===== EVENT LISTENERS =====
+function setupEventListeners() {
+    if (elements.menuToggle) {
+        elements.menuToggle.addEventListener('click', toggleMobileMenu);
+    }
+    
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            elements.mobileMenu.classList.remove('active');
+            elements.menuToggle.classList.remove('active');
         });
     });
     
-    // Size guide
-    elements.sizeGuideLink?.addEventListener('click', (e) => {
-        e.preventDefault();
-        elements.sizeGuideModal.style.display = 'flex';
+    if (elements.cartToggle) elements.cartToggle.addEventListener('click', openCart);
+    if (elements.cartClose) elements.cartClose.addEventListener('click', closeCart);
+    
+    elements.sizeOptions?.forEach(option => {
+        option.addEventListener('click', () => selectSize(option.dataset.size));
     });
     
-    elements.closeSizeGuide?.addEventListener('click', () => {
-        elements.sizeGuideModal.style.display = 'none';
+    if (elements.addToCartBtn) elements.addToCartBtn.addEventListener('click', addToCart);
+    
+    elements.thumbnails?.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            const newSrc = thumb.dataset.image;
+            if (elements.mainImage) elements.mainImage.src = newSrc;
+            elements.thumbnails.forEach(t => t.classList.remove('active'));
+            thumb.classList.
+                    add('active');
+        });
     });
     
-    // Checkout
-    elements.checkoutBtn?.addEventListener('click', openCheckout);
-    elements.closeCheckout?.addEventListener('click', closeCheckout);
-    elements.closeSuccess?.addEventListener('click', closeSuccessModal);
+    if (elements.sizeGuideLink) {
+        elements.sizeGuideLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (elements.sizeGuideModal) elements.sizeGuideModal.style.display = 'flex';
+        });
+    }
     
-    // Checkout steps
+    if (elements.closeSizeGuide) {
+        elements.closeSizeGuide.addEventListener('click', () => {
+            if (elements.sizeGuideModal) elements.sizeGuideModal.style.display = 'none';
+        });
+    }
+    
+    if (elements.checkoutBtn) elements.checkoutBtn.addEventListener('click', openCheckout);
+    if (elements.closeCheckout) elements.closeCheckout.addEventListener('click', closeCheckout);
+    if (elements.closeSuccess) elements.closeSuccess.addEventListener('click', closeSuccessModal);
+    
     elements.nextStepBtns?.forEach(btn => {
         btn.addEventListener('click', () => nextStep(btn.dataset.next));
     });
@@ -26,28 +135,24 @@ classList.add('active');
         btn.addEventListener('click', () => prevStep(btn.dataset.prev));
     });
     
-    // Submit order
-    elements.submitOrder?.addEventListener('click', submitOrderForm);
+    if (elements.submitOrder) elements.submitOrder.addEventListener('click', submitOrderForm);
     
-    // FAQ
     elements.faqQuestions?.forEach(question => {
         question.addEventListener('click', toggleFAQ);
     });
     
-    // Close modals on outside click
     window.addEventListener('click', (e) => {
-        if (e.target === elements.sizeGuideModal) {
+        if (elements.sizeGuideModal && e.target === elements.sizeGuideModal) {
             elements.sizeGuideModal.style.display = 'none';
         }
-        if (e.target === elements.checkoutModal) {
+        if (elements.checkoutModal && e.target === elements.checkoutModal) {
             closeCheckout();
         }
-        if (e.target === elements.successModal) {
+        if (elements.successModal && e.target === elements.successModal) {
             closeSuccessModal();
         }
     });
     
-    // Header scroll effect
     window.addEventListener('scroll', () => {
         const header = document.querySelector('.header');
         if (window.scrollY > 50) {
@@ -55,28 +160,6 @@ classList.add('active');
         } else {
             header.classList.remove('scrolled');
         }
-    });
-}
-
-// ===== ANIMATIONS =====
-function setupAnimations() {
-    // Intersection Observer for scroll animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animated');
-            }
-        });
-    }, observerOptions);
-    
-    // Observe elements for animation
-    document.querySelectorAll('.detail-card, .feature, .contact-item').forEach(el => {
-        observer.observe(el);
     });
 }
 
@@ -93,30 +176,26 @@ function saveCart() {
 }
 
 function updateCartUI() {
-    // Update cart count
     const totalItems = state.cart.reduce((sum, item) => sum + item.quantity, 0);
-    elements.cartCount.textContent = totalItems;
+    if (elements.cartCount) elements.cartCount.textContent = totalItems;
     
-    // Update cart sidebar
     if (state.cart.length === 0) {
-        elements.cartEmpty.style.display = 'block';
-        elements.cartBody.innerHTML = '';
-        elements.checkoutBtn.disabled = true;
+        if (elements.cartEmpty) elements.cartEmpty.style.display = 'block';
+        if (elements.cartBody) elements.cartBody.innerHTML = '';
+        if (elements.checkoutBtn) elements.checkoutBtn.disabled = true;
     } else {
-        elements.cartEmpty.style.display = 'none';
+        if (elements.cartEmpty) elements.cartEmpty.style.display = 'none';
         renderCartItems();
-        elements.checkoutBtn.disabled = false;
+        if (elements.checkoutBtn) elements.checkoutBtn.disabled = false;
     }
     
-    // Update cart total
     const total = calculateCartTotal();
-    elements.cartTotal.textContent = ${total} ₽;
-    
-    // Update checkout button state
-    updateCheckoutButton();
+    if (elements.cartTotal) elements.cartTotal.textContent = ${total} ₽;
 }
 
 function renderCartItems() {
+    if (!elements.cartBody) return;
+    
     elements.cartBody.innerHTML = '';
     
     state.cart.forEach((item, index) => {
@@ -134,14 +213,13 @@ function renderCartItems() {
                     <span class="quantity">${item.quantity}</span>
                     <button class="quantity-btn plus" data-index="${index}">+</button>
                     <button class="remove-item" data-index="${index}">Удалить</button>
-                </div>
+                    </div>
             </div>
         `;
         
         elements.cartBody.appendChild(itemElement);
     });
     
-    // Add event listeners to cart item buttons
     document.querySelectorAll('.quantity-btn.plus').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const index = parseInt(e.target.dataset.index);
@@ -168,10 +246,8 @@ function calculateCartTotal() {
     return state.cart.reduce((total, item) => total + (CONFIG.product.price * item.quantity), 0);
 }
 
-// ===== CART ACTIONS =====
 function selectSize(size) {
     state.selectedSize = size;
-    
     elements.sizeOptions.forEach(option => {
         if (option.dataset.size === size) {
             option.classList.add('active');
@@ -221,7 +297,6 @@ function removeFromCart(index) {
     showToast('Товар удален из корзины');
 }
 
-// ===== UI CONTROLS =====
 function toggleMobileMenu() {
     elements.mobileMenu.classList.toggle('active');
     elements.menuToggle.classList.toggle('active');
@@ -253,60 +328,11 @@ function closeSuccessModal() {
     closeCheckout();
 }
 
-function updateCheckoutButton() {
-    elements.checkoutBtn.disabled = state.cart.length === 0;
-}
-
-// ===== CHECKOUT FLOW =====
-function nextStep(step) {
-    // Validate current step
-    if (state.currentStep === 1) {
-        const name = document.getElementById('name').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        
-        if (!name || !phone) {
-            showToast('Заполните все обязательные поля', 'error');
-            return;
-        }
-    }
-    
-    if (state.currentStep === 2) {
-        const address = document.getElementById('address').value.trim();
-        if (!address) {
-            showToast('Укажите адрес доставки', 'error');
-            return;
-        }
-    }
-    
-    // Hide current step
-    document.
-      querySelector(`[data-step="${state.currentStep}"]`).classList.remove('active');
-    
-    // Update step indicator
-    document.querySelector(`.step[data-step="${state.currentStep}"]`).classList.remove('active');
-    
-    // Show next step
-    state.currentStep = parseInt(step);
-    document.querySelector(`[data-step="${state.currentStep}"]`).classList.add('active');
-    document.querySelector(`.step[data-step="${state.currentStep}"]`).classList.add('active');
-}
-
-function prevStep(step) {
-    // Hide current step
-    document.querySelector(`[data-step="${state.currentStep}"]`).classList.remove('active');
-    
-    // Update step indicator
-    document.querySelector(`.step[data-step="${state.currentStep}"]`).classList.remove('active');
-    
-    // Show previous step
-    state.currentStep = parseInt(step);
-    document.querySelector(`[data-step="${state.currentStep}"]`).classList.add('active');
-    document.querySelector(`.step[data-step="${state.currentStep}"]`).classList.add('active');
-}
-
 function updateOrderSummary() {
+    if (!elements.orderSummary) return;
+    
     const total = calculateCartTotal();
-    const deliveryCost = 300; // Default courier cost
+    const deliveryCost = 300;
     
     elements.orderSummary.innerHTML = `
         <h4>Ваш заказ</h4>
@@ -319,54 +345,80 @@ function updateOrderSummary() {
     `;
 }
 
+function nextStep(step) {
+    if (state.currentStep === 1) {
+        const name = document.getElementById('name')?.value.trim();
+        const phone = document.getElementById('phone')?.value.trim();
+        
+        if (!name || !phone) {
+            showToast('Заполните все обязательные поля', 'error');
+            return;
+        }
+    }
+    
+    if (state.currentStep === 2) {
+        const address = document.getElementById('address')?.value.trim();
+        if (!address) {
+            showToast('Укажите адрес доставки', 'error');
+            return;
+        }
+    }
+    
+    document.querySelector(`[data-step="${state.currentStep}"]`)?.classList.remove('active');
+    document.
+            querySelector(`.step[data-step="${state.currentStep}"]`)?.classList.remove('active');
+    
+    state.currentStep = parseInt(step);
+    document.querySelector(`[data-step="${state.currentStep}"]`)?.classList.add('active');
+    document.querySelector(`.step[data-step="${state.currentStep}"]`)?.classList.add('active');
+}
+
+function prevStep(step) {
+    document.querySelector(`[data-step="${state.currentStep}"]`)?.classList.remove('active');
+    document.querySelector(`.step[data-step="${state.currentStep}"]`)?.classList.remove('active');
+    
+    state.currentStep = parseInt(step);
+    document.querySelector(`[data-step="${state.currentStep}"]`)?.classList.add('active');
+    document.querySelector(`.step[data-step="${state.currentStep}"]`)?.classList.add('active');
+}
+
 function resetCheckoutForm() {
-    elements.checkoutForm.reset();
+    if (elements.checkoutForm) elements.checkoutForm.reset();
     state.currentStep = 1;
     
-    // Reset step indicators
     document.querySelectorAll('.step').forEach(step => {
         step.classList.remove('active');
     });
-    document.querySelector('.step[data-step="1"]').classList.add('active');
+    document.querySelector('.step[data-step="1"]')?.classList.add('active');
     
-    // Reset step content
     document.querySelectorAll('.checkout-step').forEach(step => {
         step.classList.remove('active');
     });
-    document.querySelector('.checkout-step[data-step="1"]').classList.add('active');
+    document.querySelector('.checkout-step[data-step="1"]')?.classList.add('active');
 }
 
-// ===== ORDER SUBMISSION =====
 async function submitOrderForm(e) {
     e.preventDefault();
     
-    // Collect form data
     const orderData = {
         id: REF${Date.now().toString().slice(-6)},
         date: new Date().toISOString(),
         customer: {
-            name: document.getElementById('name').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            telegram: document.getElementById('telegram').value.trim() || null,
-            address: document.getElementById('address').value.trim(),
-            comment: document.getElementById('comment').value.trim() || null
+            name: document.getElementById('name')?.value.trim() || '',
+            phone: document.getElementById('phone')?.value.trim() || '',
+            telegram: document.getElementById('telegram')?.value.trim() || null,
+            address: document.getElementById('address')?.value.trim() || '',
+            comment: document.getElementById('comment')?.value.trim() || null
         },
         items: [...state.cart],
-        delivery: document.querySelector('input[name="delivery"]:checked').nextElementSibling.textContent,
-        payment: document.querySelector('input[name="payment"]:checked').nextElementSibling.textContent,
-        total: calculateCartTotal() + 300 // Including delivery
+        delivery: document.querySelector('input[name="delivery"]:checked')?.nextElementSibling?.textContent || '',
+        payment: document.querySelector('input[name="payment"]:checked')?.nextElementSibling?.textContent || '',
+        total: calculateCartTotal() + 300
     };
     
-    // Save order locally
     localStorage.setItem(CONFIG.storageKeys.order, JSON.stringify(orderData));
-    
-    // Send to Telegram (you'll need to configure this)
-    // await sendToTelegram(orderData);
-    
-    // Show success modal
     showSuccessModal(orderData);
     
-    // Clear cart
     state.cart = [];
     saveCart();
     updateCartUI();
@@ -375,191 +427,25 @@ async function submitOrderForm(e) {
 function showSuccessModal(order) {
     closeCheckout();
     
-    // Format order details
     const itemsText = order.items.map(item => 
         ${item.name} (${item.size}) × ${item.quantity}
     ).join('<br>');
     
-    elements.finalOrderDetails.innerHTML = `
-        <p><strong>Заказ #${order.id}</strong></p>
-        <p>${itemsText}</p>
-        <p><strong>Доставка:</strong> ${order.delivery}</p>
-        <p><strong>Итого к оплате: ${order.total} ₽</strong></p>
-    `;
-    
-    elements.orderAmount.textContent = order.total;
-    elements.orderNumber.textContent = order.id;
-    
-    elements.successModal.style.display = 'flex';
-}
-
-// ===== TELEGRAM INTEGRATION (TO BE CONFIGURED) =====
-// ===== CONFIGURATION =====
-const CONFIG = {
-    product: {
-        id: 'reflex-origin-tee',
-        name: 'Reflex Origin Tee',
-        price: 2990,
-        sizes: ['M', 'L', 'XL', 'XXL']
-    },
-    storageKeys: {
-        cart: 'reflex_cart',
-        order: 'reflex_last_order'
-    },
-    telegram: {
-        botToken: 'YOUR_BOT_TOKEN', // You'll set this up
-        chatId: 'YOUR_CHAT_ID'      // Your Telegram ID
+    if (elements.finalOrderDetails) {
+        elements.finalOrderDetails.innerHTML = `
+            <p><strong>Заказ #${order.id}</strong></p>
+            <p>${itemsText}</p>
+            <p><strong>Доставка:</strong> ${order.delivery}</p>
+            <p><strong>Итого к оплате: ${order.total} ₽</strong></p>
+        `;
     }
-};
-
-// ===== STATE MANAGEMENT =====
-let state = {
-    cart: [],
-    selectedSize: 'M',
-    currentStep: 1,
-    orderData: null
-};
-
-// ===== DOM ELEMENTS =====
-const elements = {
-    // Header & Navigation
-    menuToggle: document.getElementById('menuToggle'),
-    mobileMenu: document.getElementById('mobileMenu'),
-    cartToggle: document.getElementById('cartToggle'),
-    cartClose: document.getElementById('cartClose'),
-    cartCount: document.getElementById('cartCount'),
-    cartSidebar: document.getElementById('cartSidebar'),
     
-    // Product
-    sizeOptions: document.querySelectorAll('.size-option'),
-    addToCartBtn: document.getElementById('addToCartBtn'),
-    mainImage: document.querySelector('.image-main img'),
-    thumbnails: document.querySelectorAll('.thumb'),
+    if (elements.orderAmount) elements.orderAmount.textContent = order.total;
+    if (elements.orderNumber) elements.orderNumber.textContent = order.id;
     
-    // Modals
-    sizeGuideModal: document.getElementById('sizeGuideModal'),
-    closeSizeGuide: document.getElementById('closeSizeGuide'),
-    sizeGuideLink: document.querySelector('.size-guide-link'),
-    checkoutModal: document.getElementById('checkoutModal'),
-    closeCheckout: document.getElementById('closeCheckout'),
-    successModal: document.getElementById('successModal'),
-    closeSuccess: document.getElementById('closeSuccess'),
-    
-    // Cart
-    cartBody: document.getElementById('cartBody'),
-    cartEmpty: document.getElementById('cartEmpty'),
-    cartTotal: document.getElementById('cartTotal'),
-    checkoutBtn: document.getElementById('checkoutBtn'),
-    
-    // Checkout
-    checkoutForm: document.getElementById('checkoutForm'),
-    nextStepBtns: document.querySelectorAll('.next-step'),
-    prevStepBtns: document.querySelectorAll('.prev-step'),
-    orderSummary: document.getElementById('orderSummary'),
-    submitOrder: document.getElementById('submitOrder'),
-    
-    // Success
-    finalOrderDetails: document.getElementById('finalOrderDetails'),
-    orderAmount: document.getElementById('orderAmount'),
-    orderNumber: document.getElementById('orderNumber'),
-    
-    // Toast
-    toast: document.getElementById('toast'),
-    toastMessage: document.getElementById('toastMessage'),
-    
-    // FAQ
-    faqQuestions: document.querySelectorAll('.faq-question')
-};
-
-// ===== INITIALIZATION =====
-function init() {
-    loadCart();
-    setupEventListeners();
-    setupAnimations();
-    updateCartUI();
-    
-    // Hide preloader
-    setTimeout(() => {
-        document.querySelector('.preloader').classList.add('prepare-remove');
-        setTimeout(() => {
-            document.querySelector('.preloader').style.display = 'none';
-        }, 300);
-    }, 1000);
+    if (elements.successModal) elements.successModal.style.display = 'flex';
 }
 
-// ===== EVENT LISTENERS SETUP =====
-function setupEventListeners() {
-    // Mobile menu
-    elements.menuToggle?.addEventListener('click', toggleMobileMenu);
-    document.querySelectorAll('.mobile-nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            elements.mobileMenu.classList.remove('active');
-            elements.menuToggle.classList.remove('active');
-        });
-    });
-    
-    // Cart
-    elements.cartToggle?.addEventListener('click', openCart);
-    elements.cartClose?.addEventListener('click', closeCart);
-    
-    // Product
-    elements.sizeOptions?.forEach(option => {
-        option.addEventListener('click', () => selectSize(option.dataset.size));
-    });
-    
-    elements.addToCartBtn?.addEventListener('click', addToCart);
-    
-    // Image thumbnails
-    elements.thumbnails?.forEach(thumb => {
-        thumb.addEventListener('click', () => {
-            const newSrc = thumb.dataset.image;
-            elements.mainImage.src = newSrc;
-            elements.thumbnails.forEach(t => t.classList.remove('active'));
-            thumb.
-              async function sendToTelegram(order) {
-    // You'll need to:
-    // 1. Create a bot via @BotFather on Telegram
-    // 2. Get your chat ID (send /start to @userinfobot)
-    // 3. Uncomment and configure this function
-    
-    /*
-    const message = `
-    🛒 Новый заказ #${order.id}
-    
-    👤 Клиент: ${order.customer.name}
-    📞 Телефон: ${order.customer.phone}
-    📍 Адрес: ${order.customer.address}
-    
-    🛍️ Заказ:
-    ${order.items.map(item => `• ${item.name} (${item.size}) × ${item.quantity}`).join('\n')}
-    
-    💰 Сумма: ${order.total} ₽
-    📦 Доставка: ${order.delivery}
-    
-    💬 Комментарий: ${order.customer.comment || 'нет'}
-    `;
-    
-    const url = https://api.telegram.org/bot${CONFIG.telegram.botToken}/sendMessage;
-    
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: CONFIG.telegram.chatId,
-                text: message,
-                parse_mode: 'HTML'
-            })
-        });
-        
-        return await response.json();
-    } catch (error) {
-        console.error('Telegram error:', error);
-    }
-    */
-}
-
-// ===== FAQ =====
 function toggleFAQ(e) {
     const question = e.currentTarget;
     const answer = question.nextElementSibling;
@@ -568,8 +454,9 @@ function toggleFAQ(e) {
     answer.classList.toggle('active');
 }
 
-// ===== TOAST NOTIFICATIONS =====
 function showToast(message, type = 'success') {
+    if (!elements.toast || !elements.toastMessage) return;
+    
     elements.toastMessage.textContent = message;
     elements.toast.className = toast ${type};
     elements.toast.classList.add('show');
@@ -579,5 +466,4 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
-// ===== START THE APPLICATION =====
 document.addEventListener('DOMContentLoaded', init);
