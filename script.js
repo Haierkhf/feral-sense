@@ -335,7 +335,7 @@ function openCheckout() {
     elements.orderTotal.textContent = '${calculateCartTotal()} ₽';
     
     openModal('checkoutModal');
-}
+    
 
 async function submitOrder(e) {
     e.preventDefault();
