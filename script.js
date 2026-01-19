@@ -197,7 +197,7 @@ function updateCartUI() {
     
     // Update total
     const total = calculateCartTotal();
-    elements.cartTotal.textContent = ${total} ₽;
+    elements.cartTotal.textContent = '${total} ₽';
 }
 
 function renderCartItems() {
