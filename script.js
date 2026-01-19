@@ -197,7 +197,7 @@ function updateCartUI() {
     
     // Update total
     const total = calculateCartTotal();
-    elements.cartTotal.textContent = '${total} ₽';
+    elements.cartTotal.textContent = `${total} ₽`;
 }
 
 function renderCartItems() {
@@ -244,7 +244,7 @@ function renderCartItems() {
     });
     
     document.querySelectorAll('.remove-item').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', (e) => {
             const index = parseInt(e.target.dataset.index);
             removeFromCart(index);
         });
@@ -317,7 +317,7 @@ function openCheckout() {
         showNotification('Добавьте товары в корзину');
         return;
     }
-}   
+    
     closeAllModals();
     
     // Update order summary
@@ -332,10 +332,12 @@ function openCheckout() {
     });
     
     elements.orderItems.innerHTML = itemsHTML;
-    elements.orderTotal.textContent = '${calculateCartTotal()} ₽';
+    elements.orderTotal.textContent =isplay = 'none';
+        });
+
     
     openModal('checkoutModal');
-    
+}
 
 async function submitOrder(e) {
     e.preventDefault();
@@ -345,7 +347,7 @@ async function submitOrder(e) {
     const phone = document.getElementById('phone').value.trim();
     const address = document.getElementById('address').value.trim();
 
-    if (!name || !phone || !address) {  // ← исправлено условие
+    if (!namecument.getElem!address) {
         showNotification('Заполните все обязательные поля');
         return;
     }
