@@ -1,27 +1,4 @@
-current-price, #order-product-price, #order-total-price');
-    priceElements.forEach(el => {
-        if (el) el.textContent = productConfig.price;
-    });
-    
-    // Старая цена
-    const oldPriceElement = document.querySelector('.original-price');
-    if (oldPriceElement) {
-        oldPriceElement.textContent = productConfig.originalPrice;
-    }
-    
-    // Описание
-    const descElement = document.querySelector('.product-description');
-    if (descElement) {
-        descElement.textContent = productConfig.description;
-    }
-}
-
-// Параллакс эффект
-function initParallax() {
-    const parallaxBg = document.querySelector('.parallax-bg');
-    
-    if (parallaxBg) {
-        document.addEventListener('mousemove', (e) => {
+document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth - 0.5) * 30;
             const y = (e.clientY / window.innerHeight - 0.5) * 30;
             
@@ -113,18 +90,16 @@ function initSizeSelection() {
             setTimeout(() => {
                 this.style.transform = 'scale(1)';
             }, 200);
-            
-            console.log(`Выбран размер: ${selectedSize}`);
         });
     });
 }
 
 // Обновление размера в заказе
 function updateOrderSize() {
-    const sizeElement = document.
-      getElementById('order-product-size');
+    const sizeElement = document.getElementById('order-product-size');
     if (sizeElement) {
-        sizeElement.textContent =DAwIDQ2MCA0MDBINTQwQzU2MC45
+        sizeElement.textContent =азвание товара
+    const na
     }
 }
 
@@ -133,7 +108,7 @@ function initBuyButton() {
     const buyNowBtn = document.getElementById('buy-now-btn');
     
     if (buyNowBtn) {
-        console.log('Кнопка "Купить сейчас" найдена, настраиваю обработчик...');
+        console.log('Кнопка "Купить сейчас" найдена');
         
         buyNowBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -151,7 +126,7 @@ function initBuyButton() {
             }, 150);
         });
     } else {
-        console.error('Кнопка "Купить сейчас" не найдена!');
+        console.error('Кнопка "Купить сейчас" не найдена! Проверьте ID в HTML');
     }
 }
 
@@ -240,7 +215,7 @@ function openQuickViewModal() {
         quickBuyBtn.addEventListener('click', function() {
             closeQuickViewModal();
             openPurchaseModal();
-          });
+        });
     }
     
     // Выбор размера в быстром просмотре
@@ -260,99 +235,7 @@ function openQuickViewModal() {
             closeQuickViewModal();
             document.removeEventListener('keydown', quickViewKeyHandler);
         }
-    });
-}
-
-// Закрытие быстрого просмотра
-function closeQuickViewModal() {
-    if (quickViewModal) {
-        quickViewModal.remove();
-        quickViewModal = null;
-        document.body.style.overflow = 'auto';
-    }
-}
-
-// Модальное окно покупки
-function initPurchaseModal() {
-    const modalOverlay = document.getElementById('modal-overlay');
-    const closeModal = document.getElementById('close-modal');
-    const orderForm = document.getElementById('order-form');
-    const successMessage = document.getElementById('success-message');
-    const closeSuccess = document.getElementById('close-success');
-    const paymentOptions = document.querySelectorAll('.payment-option');
-    
-    if (!modalOverlay) {
-        console.error('Модальное окно покупки не найдено!');
-        return;
-    }
-    
-    // Закрытие модального окна
-    if (closeModal) {
-        closeModal.addEventListener('click', closePurchaseModal);
-    }
-    
-    if (modalOverlay) {
-        modalOverlay.addEventListener('click', function(e) {
-            if (e.target === modalOverlay) {
-                closePurchaseModal();
-            }
-        });
-    }
-    
-    // Выбор способа оплаты
-    if (paymentOptions.length > 0) {
-        paymentOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                paymentOptions.forEach(opt => opt.classList.remove('active'));
-                this.classList.add('active');
-                
-                const method = this.getAttribute('data-method');
-                document.querySelectorAll('.payment-details').forEach(detail => {
-                    detail.classList.remove('active');
-                });
-                
-                const selectedDetails = document.getElementById(`${method}-details`);
-                if (selectedDetails) {
-                    selectedDetails.classList.add('active');
-                }
-            });
-        });
-    }
-    
-    // Отправка формы заказа
-    if (orderForm) {
-        orderForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Валидация формы
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const screenshot = document.getElementById('screenshot').value.trim();
-            
-            if (!nameons = document!phone || !screenshot) {
-                alert('Пожалуйста, заполните все обязательные поля (отмечены *)');
-                return;
-            }
-            
-            // Проверка email
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                alert('Пожалуйста, введите корректный email адрес');
-                return;
-            }
-            
-            // Имитация отправки
-            const submitBtn = orderForm.querySelector('.btn-submit');
-            const originalText = submitBtn.querySelector('span').textContent;
-            
-            submitBtn.querySelector('span').textContent = 'Отправка...';
-            submitBtn.disabled = true;
-            
-            // Симуляция задержки отправки
-            setTimeout(() => {
-                if (orderForm) orderForm.style.display = 'none';
-              // Конфигурация товара
+        // Конфигурация товара
 const productConfig = {
     name: "Feral Tee",
     price: "1 200 ₽",
@@ -424,7 +307,8 @@ function loadProductImages() {
         // Обработчик ошибки загрузки
         mainImage.onerror = function() {
             console.error('Ошибка загрузки основного изображения');
-            mainImage.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwMCIgaGVpZ2h0PSIxMDAwIiB2aWV3Qm94PSIwIDAgMTAwMCAxMDAwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwMCIgaGVpZ2h0PSIxMDAwIiBmaWxsPSIjMmEyYTJhIi8+CjxwYXRoIGQ9Ik01MDAgMzAwQzM4OS41NDQgMzAwIDMwMCAzODkuNTQ0IDMwMCA1MDBDMzAwIDYxMC40NTYgMzg5LjU0NCA3MDAgNTAwIDcwMEM2MTAuNDU2IDcwMCA3MDAgNjEwLjQ1NiA3MDAgNTAwQzcwMCAzODkuNTQ0IDYxMC40NTYgMzAwIDUwMCAzMDBaIiBmaWxsPSIjNDU0NTQ1Ii8+CjxwYXRoIGQ9Ik01MDAgNjAwQzQ3OS4wODggNjAwIDQ2MCA1ODAuOTEyIDQ2MCA1NjBDNDYwIDUzOS4wODggNDc5LjA4OCA1MjAgNTAwIDUyMEM1MjAuOTEyIDUyMCA1NDAgNTM5LjA4OCA1NDAgNTYwQzU0MCA1ODAuOTEyIDUyMC45MTIgNjAwIDUwMCA2MDBaIiBmaWxsPSIjNjU2NTY1Ii8+CjxwYXRoIGQ9Ik00MjAgNDQwQzQyMCA0MTkuMDg4IDQzOS4wODggNDAwIDQ2MCA0MDBINTQwQzU2MC45MTIgNDAwIDU4MCA0MTkuMDg4IDU4MCA0NDBWNjIwQzU4MCA2NDAuOTEyIDU2MC45MTIgNjYwIDU0MCA2NjBINDYwQzQzOS4wODggNjYwIDQyMCA2NDAuOTEyIDQyMCA2MjBWNDQwWiIgZmlsbD0iIzY1NjU2NSIvPgo8L3N2Zz4K';
+            // Простая SVG заглушка
+            mainImage.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwMCIgaGVpZ2h0PSIxMDAwIiB2aWV3Qm94PSIwIDAgMTAwMCAxMDAwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAwIiBoZWlnaHQ9IjEwMDAiIGZpbGw9IiMyYTJhMmEiLz48L3N2Zz4=';
         };
     }
     
@@ -447,14 +331,125 @@ function updateProductInfo() {
         if (el) el.textContent = productConfig.name;
     });
     
-  // Цена
+    // Цена
     const priceElements = document.querySelectorAll('.current-price, #order-product-price, #order-total-price');
     priceElements.forEach(el => {
         if (el) el.textContent = productConfig.price;
     });
-  if (successMessage) successMessage.style.display = 'block';
+    
+    // Старая цена
+    const oldPriceElement = document.querySelector('.original-price');
+    if (oldPriceElement) {
+        oldPriceElement.textContent = productConfig.originalPrice;
+    }
+    
+    // Описание
+    const descElement = document.querySelector('.product-description');
+    if (descElement) {
+        descElement.textContent = productConfig.description;
+    }
+}
+
+// Параллакс эффект
+function initParallax() {
+    const parallaxBg = document.querySelector('.parallax-bg');
+    
+    if (parallaxBg) {
+        });
+}
+
+// Закрытие быстрого просмотра
+function closeQuickViewModal() {
+    if (quickViewModal) {
+        quickViewModal.remove();
+        quickViewModal = null;
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Модальное окно покупки
+function initPurchaseModal() {
+    const modalOverlay = document.getElementById('modal-overlay');
+    const closeModal = document.getElementById('close-modal');
+    const orderForm = document.getElementById('order-form');
+    const successMessage = document.getElementById('success-message');
+    const closeSuccess = document.getElementById('close-success');
+    const paymentOptions = document.querySelectorAll('.payment-option');
+    
+    if (!modalOverlay) {
+        console.error('Модальное окно покупки не найдено!');
+        return;
+    }
+    
+    // Закрытие модального окна
+    if (closeModal) {
+        closeModal.addEventListener('click', closePurchaseModal);
+    }
+    
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                closePurchaseModal();
+            }
+        });
+    }
+    
+    // Выбор способа оплаты
+    if (paymentOptions.length > 0) {
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                paymentOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
                 
-                // Логирование данных заказа (в реальном приложении здесь отправка на сервер)
+                const method = this.getAttribute('data-method');
+                document.querySelectorAll('.payment-details').forEach(detail => {
+                    detail.classList.remove('active');
+                });
+                
+                const selectedDetails = document.getElementById(`${method}-details`);
+                if (selectedDetails) {
+                    selectedDetails.classList.add('active');
+                }
+            });
+        });
+    }
+    
+    // Отправка формы заказа
+    if (orderForm) {
+        orderForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Валидация формы
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const screenshot = document.getElementById('screenshot').value.trim();
+            
+            if (!name       this.st!phone || !screenshot) {
+                alert('Пожалуйста, заполните все обязательные поля (отмечены *)');
+                return;
+            }
+            
+            // Проверка email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Пожалуйста, введите корректный email адрес');
+                return;
+            }
+            
+            // Имитация отправки
+            const submitBtn = orderForm.querySelector('.btn-submit');
+            const originalText = submitBtn.querySelector('span').textContent;
+            
+            submitBtn.querySelector('span').textContent = 'Отправка...';
+            submitBtn.disabled = true;
+            
+            // Симуляция задержки отправки
+            setTimeout(() => {
+                if (orderForm) orderForm.style.display = 'none';
+                if (successMessage) successMessage.style.display = 'block';
+                
+                // Логирование данных заказа
                 console.log('Заказ оформлен:', {
                     product: productConfig.name,
                     size: selectedSize,
@@ -470,19 +465,12 @@ function updateProductInfo() {
                 }, 5000);
             }, 1500);
         });
-    }
+        }
     
     // Закрытие сообщения об успехе
     if (closeSuccess) {
         closeSuccess.addEventListener('click', closePurchaseModal);
     }
-    
-    // Закрытие по клавише Esc
-    document.addEventListener('keydown', function purchaseModalKeyHandler(e) {
-        if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
-            closePurchaseModal();
-        }
-    });
 }
 
 // Открытие модального окна покупки
@@ -498,9 +486,6 @@ function openPurchaseModal() {
         // Открываем модальное окно
         modalOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
-        
-        // Прокручиваем к началу формы
-        modalOverlay.scrollTop = 0;
     } else {
         console.error('Не могу найти модальное окно покупки!');
     }
@@ -549,7 +534,7 @@ function initEasterEgg() {
             
             if (currentTime - lastClickTime < 500) {
                 clickCount++;
-                if (clickCount >= 2) { // Тройной клик
+                if (clickCount >= 2) {
                     easterEgg.classList.add('active');
                     clickCount = 0;
                     
@@ -609,14 +594,16 @@ function initScrollAnimations() {
 
 // Анимация визуального элемента
 function initVisualElement() {
-    const visualElement = document.getElementById('visual-element');
+    const visualElement = document.
+        getElementById('visual-element');
     
     if (visualElement && window.innerWidth > 768) {
         document.addEventListener('mousemove', function(e) {
             const x = (e.clientX / window.innerWidth - 0.5) * 10;
             const y = (e.clientY / window.innerHeight - 0.5) * 10;
             
-            visualElement.style.transform =   header.classList.remove('s
+            visualElement.style.transform =his.getAttribute('href');
+   
         });
     }
 }
@@ -637,21 +624,4 @@ window.addEventListener('resize', function() {
 // Инициализация при полной загрузке страницы
 window.addEventListener('load', function() {
     console.log('Страница полностью загружена');
-    
-    // Проверяем, что все основные элементы существуют
-    const checkElements = [
-        { id: 'buy-now-btn', name: 'Кнопка "Купить сейчас"' },
-        { id: 'modal-overlay', name: 'Модальное окно покупки' },
-        { id: 'main-product-image', name: 'Основное изображение товара' },
-        { id: 'size-options', name: 'Опции выбора размера' }
-    ];
-    
-    checkElements.forEach(item => {
-        const element = document.getElementById(item.id);
-        if (element) {
-            console.log(`✓ ${item.name} найден`);
-        } else {
-            console.error(`✗ ${item.name} НЕ найден!`);
-        }
-    });
 });
